@@ -177,8 +177,8 @@ static void dequantize(DequantizedElement* dq_buffer,
 template <typename T>
 class packed_scale_t {
 public:
-  static_assert(cute::is_same_v<T, cutlass::int8_t> ||
-                cute::is_same_v<T, cutlass::uint8_t> ||
+  static_assert(cute::is_same_v<T, int8_t> ||
+                cute::is_same_v<T, uint8_t> ||
                 cute::is_same_v<T, cutlass::float_e4m3_t> ||
                 cute::is_same_v<T, cutlass::float_e5m2_t>,
                 "only 8 bit arithmetic types are supported.");

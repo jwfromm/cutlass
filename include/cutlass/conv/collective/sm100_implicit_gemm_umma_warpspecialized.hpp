@@ -37,13 +37,13 @@
 #include "cutlass/pipeline/pipeline.hpp"
 #include "cutlass/gemm/gemm.h"
 #include "cutlass/detail/cluster.hpp"
+#include <cutlass/kernel_hardware_info.hpp>
 
 #include "cutlass/conv/detail.hpp"
 #include "cute/algorithm/functional.hpp"
 #include "cute/arch/cluster_sm90.hpp"
 #include "cute/atom/mma_atom.hpp"
 #include "cute/algorithm/gemm.hpp"
-#include "cute/tensor_predicate.hpp"
 #include "cute/numeric/arithmetic_tuple.hpp"
 #include "cutlass/trace.h"
 
@@ -643,7 +643,7 @@ public:
       auto to_64b = [](auto S) { return transform_leaf(S, [](auto s) { return static_cast<int64_t>(s); }); };
 
       if constexpr (ConvOp == conv::Operator::kFprop || ConvOp == conv::Operator::kDgrad) {
-        implementable &= (cute::product(to_64b(M)) <= cutlass::platform::numeric_limits<int32_t>::max()) &
+        implementable &= (cute::product(to_64b(M)) <= cutlass::platform::numeric_limits<int32_t>::max()) &&
                          (cute::product(to_64b(L)) <= cutlass::platform::numeric_limits<int32_t>::max());
       }
       else if constexpr (ConvOp == conv::Operator::kWgrad) {

@@ -472,7 +472,7 @@ make_im2col_tma_copy_desc(
       tma_oob_fill);
 
   int64_t max_tma_offset = gmem_prob_shape[0];
-  for (int i = 1; i < tma_dim; ++i) {
+  for (int i = 1; i < num_total_modes; ++i) {
     max_tma_offset += gmem_prob_shape[i] * gmem_prob_stride[i];
   }
   if (max_tma_offset < 128*1024) {

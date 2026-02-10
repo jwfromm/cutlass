@@ -464,6 +464,17 @@ struct blockscaled_type<BuilderScheduleTag, cutlass::mx_float4_t<T>> {
      cute::is_base_of_v<KernelScheduleBlockScaledSparseGemmSm120, BuilderScheduleTag>) ? 64 : 32;
 };
 
+// MXFP4 with 1x16 block size (16 elements per scale factor) and E8M0 scales
+// This is a hybrid format combining MXFP4 scale type (E8M0) with NVFP4 block size (16)
+template <class BuilderScheduleTag, class T>
+struct blockscaled_type<BuilderScheduleTag, cutlass::mx_float4_16_t<T>> {
+  using sf_type = cutlass::float_ue8m0_t;  // E8M0 scale factors (same as MXFP4)
+  using data_type = T;
+  static constexpr uint32_t SfVectorSize =
+    (cute::is_base_of_v<KernelScheduleBlockScaledSparseGemmSm100, BuilderScheduleTag> ||
+     cute::is_base_of_v<KernelScheduleBlockScaledSparseGemmSm120, BuilderScheduleTag>) ? 32 : 16;  // Same block size as NVFP4
+};
+
 template <class BuilderScheduleTag, class T>
 struct blockscaled_type<BuilderScheduleTag, nv_float4_t<T>> {
   using sf_type = cutlass::float_ue4m3_t;

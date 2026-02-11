@@ -514,6 +514,20 @@ struct nv_float4_t
 
 using type_erased_dynamic_nv_float4_t = nv_float4_t<type_erased_dynamic_float4_t>;
 
+// MX float4 type with 1x16 block size (16 elements per scale factor) and E8M0 scales
+// This is a hybrid format: uses MXFP4 scale factor type (E8M0) but with NVFP4 block size (16)
+template <class F4Type>
+struct mx_float4_16_t
+{
+  static_assert(cute::is_same_v<F4Type,cutlass::float_e2m1_t>
+                || cute::is_same_v<F4Type,type_erased_dynamic_float4_t>
+                , "Only float_e2m1_t or type_erased_dynamic_float4_t can be used for MXFP4-16");
+  using ScaleFactorType = cutlass::float_ue8m0_t;  // E8M0 scale factors (same as standard MXFP4)
+  using DataType = F4Type;
+  static constexpr int SFVecSize = 16;  // 16 elements per scale factor (same as NVFP4)
+};
+
+using type_erased_dynamic_mx_float4_16_t = mx_float4_16_t<type_erased_dynamic_float4_t>;
 
 namespace detail {
 
